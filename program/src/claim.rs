@@ -41,7 +41,7 @@ pub fn process_claim(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
     )?;
 
     // If filled, pay the fee collector.
-    if is_filled {
+    if is_filled && order.fee > 0 {
         transfer_signed(
             order_info,
             vault_info,
