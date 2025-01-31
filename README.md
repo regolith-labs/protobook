@@ -18,9 +18,7 @@
 
 A user opens an **order** by specifying the token they want to buy, the amount they want to buy, the token they want to sell, the amount they want to sell, and then locking the tokens they wish to sell in an escrow vault. Any user can fill (or partially fill) the order by depositing the requested tokens into the escrow vault and receiving a **receipt** to track the deposit. 
 
-When an order expires, its owner can collect it to receive either the tokens they wished to buy if the order was filled, or reclaim their original deposit if the order was not filled. An optional fee can be sent to a fee collector if the order was filled. Additionally, receipt holders can redeem their receipts for expired orders to receive either the tokens offered if the order was filled, or their original deposit if the order was not filled.
-
-Once all tokens have been transferred from the escrow vaults, the order account can be closed and rent returned to its owner.
+When an order expires, its owner can collect it to receive either the tokens they wished to buy if the order was filled, or reclaim their original deposit if the order was not filled. An optional fee can be sent to a fee collector if the order was filled. Additionally, receipt holders can redeem their receipts for expired orders to receive either the tokens offered if the order was filled, or their original deposit if the order was not filled. Once all tokens have been transferred from the escrow vaults, the order account can be closed and rent returned to its owner.
 
 ## Discussion
 
