@@ -2,7 +2,7 @@ use steel::*;
 
 use super::ProtobookAccount;
 
-/// An order is a public, timebound offer to buy a given tokens at a fixed price.
+/// An order is a public, timebound offer to buy a given token at a fixed price.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable)]
 pub struct Order {
