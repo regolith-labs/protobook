@@ -58,7 +58,7 @@ pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     receipt.deposit += amount;
     order.total_deposits += amount;
 
-    // Expire immediately if order is filled.
+    // If filled, expire the order immediately.
     if order.total_deposits == order.amount_b {
         order.expires_at = clock.unix_timestamp;
     }
