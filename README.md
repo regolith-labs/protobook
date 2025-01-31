@@ -1,6 +1,6 @@
 # Protobook
 
-**Protobook** is a smart contract for issuing timebound, public offers to exchange two tokens at a fixed price. It allows a private party to execute a one-to-many OTC exchange with public liquidity. In this way, it represents a generalized orderbook protocol.
+**Protobook** is a smart contract for issuing public, timebound offers to swap two tokens at a fixed price. It allows a private party to execute a one-to-many OTC exchange with public liquidity. In this way, it represents a generalized orderbook protocol.
 
 ## API
 - [`Consts`](api/src/consts.rs) – Program constants.
