@@ -42,42 +42,6 @@ pub fn process_close(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
         &token_program,
         &[&ORDER, signer_info.key.as_ref(), order.id.as_ref()],
     )?;
-    // invoke_signed(
-    //     &spl_token::instruction::close_account(
-    //         &spl_token::ID,
-    //         &vault_a_info.key,
-    //         &signer_info.key,
-    //         &order_info.key,
-    //         &[&order_info.key],
-    //     )?,
-    //     &[
-    //         token_program.clone(),
-    //         vault_a_info.clone(),
-    //         signer_info.clone(),
-    //         order_info.clone(),
-    //     ],
-    //     &protobook_api::ID,
-    //     &[ORDER, signer_info.key.as_ref(), order.id.as_ref()],
-    // )?;
-
-    // Close vault B.
-    // invoke_signed(
-    //     &spl_token::instruction::close_account(
-    //         &spl_token::ID,
-    //         &vault_b_info.key,
-    //         &signer_info.key,
-    //         &order_info.key,
-    //         &[&order_info.key],
-    //     )?,
-    //     &[
-    //         token_program.clone(),
-    //         vault_b_info.clone(),
-    //         signer_info.clone(),
-    //         order_info.clone(),
-    //     ],
-    //     &protobook_api::ID,
-    //     &[ORDER, signer_info.key.as_ref(), order.id.as_ref()],
-    // )?; 
 
     Ok(())
 }
