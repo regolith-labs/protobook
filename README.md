@@ -22,7 +22,7 @@ When an order expires, its owner can collect either the tokens they wished to bu
 
 ## Discussion
 
-Protobook is designed with the assumption that all order matching happens offchain. It provides _only_ a system for issuing and managing public swap orders. These orders can represent one-off OTC trades between private parties or one-to-many swaps on a public exchange. An orderbook UI and trading bots can be readibly be built on the data structures provided by Protobook with full support for limit orders and immediate cancelling. In other words, Protobook puts the orders onchain and builds the "book" offchain. 
+Protobook is built on the assumption that all order matching can happen offchain. It provides _only_ a system for issuing and managing public swap orders. These orders can represent one-off OTC trades between private parties or one-to-many swaps on a public exchange. An orderbook UI and trading bots can be readibly be built on the data structures provided by Protobook with full support for limit orders and immediate cancelling. In other words, Protobook puts the orders onchain and builds the "book" offchain. 
 
 A book is simply an index of all open orders. To create a book, for example, one could filter for all Protobook orders between SOL and USDC mints. Then simply filter out the expired orders, index the orders into price ranges, and display the orders as a book to visualize the bid/ask spread and market depth. For orders batched into the same price range, an exchange can choose to fill orders with the best prices first. By assuming that all order matching happens offchain, Protobook greatly reduces contract complexity and transaction costs compared to existing orderbook protocols on Solana. 
 
