@@ -2,7 +2,7 @@ use steel::*;
 
 use super::ProtobookAccount;
 
-/// A receipt is a deposit to fill an order.
+/// A receipt tracks a deposit to fill an order.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable)]
 pub struct Receipt { 

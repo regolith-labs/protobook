@@ -6,7 +6,7 @@ use super::ProtobookAccount;
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable)]
 pub struct Order {
-    /// The creator of the order.
+    /// The maker of the order.
     pub authority: Pubkey,
 
     /// The amount of token A offered by the authority and locked in escrow.
@@ -33,7 +33,7 @@ pub struct Order {
     /// The mint of token B.
     pub mint_b: Pubkey,
 
-    /// The total amount of token B deposited by the public.
+    /// The total amount of token B deposited by takers.
     pub total_deposits: u64,
 }
 

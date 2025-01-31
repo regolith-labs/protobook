@@ -1,12 +1,12 @@
 mod cancel;
-mod claim;
+mod collect;
 mod close;
 mod fill;
 mod open;
 mod redeem;
 
 use cancel::*;
-use claim::*;
+use collect::*;
 use close::*;
 use fill::*;
 use open::*;
@@ -24,8 +24,8 @@ pub fn process_instruction(
 
     match ix {
         ProtobookInstruction::Cancel => process_cancel(accounts, data)?,
-        ProtobookInstruction::Claim => process_claim(accounts, data)?,
         ProtobookInstruction::Close => process_close(accounts, data)?,
+        ProtobookInstruction::Collect => process_collect(accounts, data)?,
         ProtobookInstruction::Fill => process_fill(accounts, data)?,
         ProtobookInstruction::Open => process_open(accounts, data)?,
         ProtobookInstruction::Redeem => process_redeem(accounts, data)?,

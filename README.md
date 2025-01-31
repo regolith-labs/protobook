@@ -4,23 +4,23 @@
 
 ## Accounts
 - [`Order`](api/src/state/order.rs) – An order is a public, time-bound offer to exchange two tokens at a fixed price.
-- [`Receipt`](api/src/state/receipt.rs) – A receipt is a deposit to fill an order.
+- [`Receipt`](api/src/state/receipt.rs) – A receipt tracks a deposit to fill an order.
 
 ## Instructions
 - [`Cancel`](program/src/cancel.rs) – Cancels an order immediately.
-- [`Claim`](program/src/claim.rs) – Claims escrowed tokens from an expired order.
 - [`Close`](program/src/close.rs) – Closes an order account.
+- [`Collect`](program/src/collect.rs) – Collects tokens from an expired order.
 - [`Fill`](program/src/fill.rs) – Fills an order.
 - [`Open`](program/src/open.rs) – Opens an order.
 - [`Redeem`](program/src/redeem.rs) – Redeems a receipt for an expired order.
 
 ## How it works
 
-A user opens an order by specifying the token they want to buy, the amount they want to buy, the token they want to sell, the amount they want to sell, and locking the tokens they wish to sell in an order escrow vault. Any user can fill (or partially fill) an order by depositing the desired tokens into the order's escrow vault, and receiving a receipt to mark the deposit. 
+A user opens an order by specifying the token they want to buy, the amount they want to buy, the token they want to sell, the amount they want to sell, and then locking the tokens they wish to sell in an escrow vault. Any user can fill (or partially fill) the order by depositing the requested tokens into the escrow vault and receiving a receipt to track the deposit. 
 
-When the order expires, the owner of the order can either claim the tokens they wished to buy if the order was filled, or take back their originally deposited tokens they wished to sell if the order was not filled. If the order is filled, an optional fee can be collected by a fee collector in the form of a % of the received tokens. Additionally, receipt holders can redeem their receipt for either the tokens offered if the order was filled, or the tokens they deposited if the order was not filled.
+When an order expires, its owner can collect it to receive either the tokens they wished to buy if the order was filled, or reclaim their original deposit if the order was not filled. An optional fee can be sent to a fee collector if the order was filled. Additionally, receipt holders can redeem their receipts for expired orders to receive either the tokens offered if the order was filled, or their original deposit if the order was not filled.
 
-If all tokens have been claimed from the escrow vaults, the order account can be closed.
+Once all tokens have been transferred from the escrow vaults, the order account can be closed and rent returned to its owner.
 
 ## Get started
 

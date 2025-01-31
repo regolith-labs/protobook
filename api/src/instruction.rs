@@ -4,8 +4,8 @@ use steel::*;
 #[derive(Clone, Copy, Debug, Eq, PartialEq, TryFromPrimitive)]
 pub enum ProtobookInstruction {
     Cancel = 0,
-    Claim = 1,
-    Close = 2,
+    Close = 1,
+    Collect = 2,
     Fill = 3,
     Open = 4,
     Redeem = 5,
@@ -17,11 +17,11 @@ pub struct Cancel {}
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Pod, Zeroable)]
-pub struct Claim {}
+pub struct Close {}
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Pod, Zeroable)]
-pub struct Close {}
+pub struct Collect {}
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Pod, Zeroable)]
@@ -48,8 +48,8 @@ pub struct Fill {
 pub struct Redeem {}
 
 instruction!(ProtobookInstruction, Cancel);
-instruction!(ProtobookInstruction, Claim);
 instruction!(ProtobookInstruction, Close);
+instruction!(ProtobookInstruction, Collect);
 instruction!(ProtobookInstruction, Fill);
 instruction!(ProtobookInstruction, Open);
 instruction!(ProtobookInstruction, Redeem);

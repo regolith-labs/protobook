@@ -1,8 +1,8 @@
 use protobook_api::prelude::*;
 use steel::*;
 
-/// Claims escrowed tokens from an expired order.
-pub fn process_claim(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResult {
+/// Collects tokens from an expired order.
+pub fn process_collect(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResult {
     // Load accounts.
     let clock = Clock::get()?;
     let [signer_info, beneficiary_info, fee_collector_info, order_info, vault_info, token_program] = accounts else {

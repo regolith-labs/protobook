@@ -24,10 +24,10 @@ pub fn process_close(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
     system_program.is_program(&system_program::ID)?;
     token_program.is_program(&spl_token::ID)?;
  
-    // Close order account.
+    // Close the order account.
     order_info.close(signer_info)?;
 
-    // Close vault accounts.
+    // Close the escrow vaults.
     close_token_account_signed(
         &vault_a_info,
         &signer_info,

@@ -5,7 +5,7 @@ use steel::*;
 pub fn process_redeem(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResult {
     // Load accounts.
     let clock = Clock::get()?;
-    let [signer_info, beneficiary_info, order_info, receipt_info, vault_info, token_program] = accounts else {
+    let [signer_info, beneficiary_info, order_info, receipt_info, vault_info, system_program, token_program] = accounts else {
         return Err(ProgramError::NotEnoughAccountKeys);
     };
     signer_info.is_signer()?;
@@ -15,6 +15,7 @@ pub fn process_redeem(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResu
     let receipt = receipt_info
         .as_account_mut::<Receipt>(&protobook_api::ID)?
         .assert_mut(|r| r.authority == *signer_info.key)?;
+    system_program.is_program(&system_program::ID)?;
     token_program.is_program(&spl_token::ID)?;
 
     // Check if order is filled.
@@ -41,5 +42,9 @@ pub fn process_redeem(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResu
         &[ORDER, signer_info.key.as_ref(), order.id.as_ref()],
     )?;
 
+    // Close the order account.
+    order_info.close(&signer_info)?;
+
     Ok(())
 }
+
