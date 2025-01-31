@@ -1,6 +1,6 @@
 # Protobook
 
-**Protobook** is a smart contract for issuing public, timebound offers to exchange two tokens at a fixed price. It allows a private party to execute a one-to-many OTC swap with public liquidity. In this way, it represents a generalized orderbook protocol.
+**Protobook** is a Solana program for issuing public, timebound offers to exchange two tokens at a fixed price. It allows a private party to execute a one-to-many OTC swap with public liquidity. In this way, it represents a generalized orderbook protocol.
 
 ## Accounts
 - [`Order`](api/src/state/order.rs) – An order is a public, time-bound offer to exchange two tokens at a fixed price.
