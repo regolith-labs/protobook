@@ -3,7 +3,7 @@
 **Protobook** is a Solana smart contract for issuing public, timebound orders to buy a given token at a fixed price. It allows anyone to securely execute a one-to-many OTC swap with participating public liquidity. In this way, it is a generic and permissionless orderbook protocol.
 
 ## Accounts
-- [`Order`](api/src/state/order.rs) – An order is a public, time-bound offer to exchange two tokens at a fixed price.
+- [`Order`](api/src/state/order.rs) – An order is a public, timebound offer to buy a given token at a fixed price.
 - [`Receipt`](api/src/state/receipt.rs) – A receipt tracks a deposit to fill an order.
 
 ## Instructions
