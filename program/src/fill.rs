@@ -45,7 +45,7 @@ pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
 
     // Lock token B in escrow.
     let remaining = order.amount_b - order.total_deposits;
-    let amount = if remaining < args.amount { remaining } else { args.amount };
+    let amount = args.amount.min(remaining);
     transfer(
         signer_info,
         sender_info,
@@ -57,6 +57,11 @@ pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     // Record the deposit.
     receipt.deposit += amount;
     order.total_deposits += amount;
+
+    // Expire immediately if order is filled.
+    if order.total_deposits == order.amount_b {
+        order.expires_at = clock.unix_timestamp;
+    }
 
     Ok(())
 }
