@@ -6,13 +6,13 @@ use super::ProtobookAccount;
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable)]
 pub struct Receipt { 
-    /// The authority of the receipt. 
+    /// The holder of the receipt (order taker).
     pub authority: Pubkey,
 
-    /// The amount of token B deposited by the receipt holder.
+    /// The amount of token B deposited by the taker.
     pub deposit: u64,
 
-    /// The order that the receipt is redeemable for.
+    /// The order this receipt is redeemable for.
     pub order: Pubkey,
 }
 
