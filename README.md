@@ -2,10 +2,6 @@
 
 **Protobook** is a smart contract for issuing public, timebound offers to exchange two tokens at a fixed price. It allows a private party to execute a one-to-many OTC swap with public liquidity. In this way, it represents a generalized orderbook protocol.
 
-## API
-- [`Consts`](api/src/consts.rs) – Program constants.
-- [`Instruction`](api/src/instruction.rs) – Declared instructions.
-
 ## Instructions
 - [`Cancel`](program/src/cancel.rs) – Cancels an order immediately.
 - [`Claim`](program/src/claim.rs) – Claims escrowed tokens from an expired order.
