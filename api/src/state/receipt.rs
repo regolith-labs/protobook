@@ -2,14 +2,17 @@ use steel::*;
 
 use super::ProtobookAccount;
 
-/// Receipt tracks an offer to fill an order.
+/// A receipt is a public deposit to fill an order.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable)]
 pub struct Receipt { 
+    /// The authority of the receipt. 
     pub authority: Pubkey,
 
-    pub balance: u64,
+    /// The amount of token B deposited by the receipt holder.
+    pub deposit: u64,
 
+    /// The order that the receipt is redeemable for.
     pub order: Pubkey,
 }
 

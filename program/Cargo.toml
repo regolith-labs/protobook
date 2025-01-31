@@ -16,12 +16,13 @@ crate-type = ["cdylib", "lib"]
 [dependencies]
 protobook-api.workspace = true
 solana-program.workspace = true
+spl-associated-token-account.workspace = true
+spl-token.workspace = true
 steel.workspace = true
 
 [dev-dependencies]
 base64 = "0.21"
 rand = "0.8.5"
-spl-associated-token-account.workspace = true
 solana-program-test = "1.18"
 solana-sdk = "1.18"
 tokio = { version = "1.35", features = ["full"] }

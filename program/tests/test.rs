@@ -24,9 +24,10 @@ async fn run_test() {
     // TODO Mint tokens to sender
     let mint_a = Keypair::new();
     let mint_b = Keypair::new();
+    todo!("Set up tests.");
 
     // Submit initialize transaction.
-    let ix = open(payer.pubkey(), 100, 100, 10, 0, mint_a.pubkey(), mint_b.pubkey(), [0; 32], 1);
+    let ix = open(payer.pubkey(), 100, 100, 10, 0, [0; 32], mint_a.pubkey(), mint_b.pubkey());
     let tx = Transaction::new_signed_with_payer(&[ix], Some(&payer.pubkey()), &[&payer], blockhash);
     let res = banks.process_transaction(tx).await;
     assert!(res.is_ok());
@@ -39,14 +40,12 @@ async fn run_test() {
     assert_eq!(order.authority, payer.pubkey());
     assert_eq!(order.amount_a, 100);
     assert_eq!(order.amount_b, 100);
-    assert_eq!(order.commission, 10);
-    assert_eq!(order.commission_recipient, Pubkey::default());
     assert_eq!(order.expires_at, 0);
-    assert_eq!(order.filled, 0);
+    assert_eq!(order.fee, 10);
+    assert_eq!(order.fee_collector, Pubkey::default());
+    assert_eq!(order.id, [0; 32]);
     assert_eq!(order.mint_a, mint_a.pubkey());
     assert_eq!(order.mint_b, mint_b.pubkey());
-    assert_eq!(order.seed, [0; 32]);
-    assert_eq!(order.threshold, 1);
-    assert_eq!(order.total_receipts, 0);
+    assert_eq!(order.total_deposits, 0);
+    assert_eq!(order.total_redemptions, 0);
 }
-

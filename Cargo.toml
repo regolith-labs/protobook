@@ -17,6 +17,7 @@ protobook-api = { path = "./api", version = "0.1.0" }
 bytemuck = "1.14"
 num_enum = "0.7"
 spl-associated-token-account = { version = "3.0", features = ["no-entrypoint"] }
+spl-token = { version = "3.0", features = ["no-entrypoint"] }
 solana-program = "1.18"
 steel = { features = ["spl"], version = "2.0" }
 thiserror = "1.0"
