@@ -28,7 +28,7 @@ pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     token_program.is_program(&spl_token::ID)?;
 
     // Create receipt account, if necessary.
-    if receipt_info.data_is_empty() {
+    let receipt = if receipt_info.data_is_empty() {
         create_program_account::<Receipt>(
             receipt_info,
             system_program,
@@ -40,8 +40,10 @@ pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
         receipt.authority = *signer_info.key;
         receipt.deposit = 0;
         receipt.order = *order_info.key;
-    }
-    let receipt = receipt_info.as_account_mut::<Receipt>(&protobook_api::ID)?;
+        receipt
+    } else {
+        receipt_info.as_account_mut::<Receipt>(&protobook_api::ID)?
+    };
 
     // Lock token B in escrow.
     let remaining = order.amount_b - order.total_deposits;
