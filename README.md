@@ -16,7 +16,7 @@
 
 ## State
 - [`Order`](api/src/state/order.rs) – An order is a public, time-bound offer to exchange two tokens at a fixed price.
-- [`Receipt`](api/src/state/receipt.rs) – A receipt is a public deposit to fill an order.
+- [`Receipt`](api/src/state/receipt.rs) – A receipt is a deposit to fill an order.
 
 ## Get started
 
