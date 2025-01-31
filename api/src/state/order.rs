@@ -35,9 +35,6 @@ pub struct Order {
 
     /// The total amount of token B deposited by the public.
     pub total_deposits: u64,
-
-    /// The total amount of receipts redeemed (corresponds to mint either A or B depending on whether the order is filled).
-    pub total_redemptions: u64,
 }
 
 account!(ProtobookAccount, Order);

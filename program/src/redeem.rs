@@ -41,8 +41,5 @@ pub fn process_redeem(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResu
         &[ORDER, signer_info.key.as_ref(), order.id.as_ref()],
     )?;
 
-    // Record the redemption.
-    order.total_redemptions += amount;
-
     Ok(())
 }

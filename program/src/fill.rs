@@ -29,7 +29,7 @@ pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
 
     // Create receipt account, if necessary.
     if receipt_info.data_is_empty() {
-        create_account::<Receipt>(
+        create_program_account::<Receipt>(
             receipt_info,
             system_program,
             signer_info,

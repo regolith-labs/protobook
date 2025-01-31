@@ -47,5 +47,4 @@ async fn run_test() {
     assert_eq!(order.mint_a, mint_a.pubkey());
     assert_eq!(order.mint_b, mint_b.pubkey());
     assert_eq!(order.total_deposits, 0);
-    assert_eq!(order.total_redemptions, 0);
 }

@@ -42,7 +42,7 @@ pub fn process_open(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     associated_token_program.is_program(&spl_associated_token_account::ID)?;
 
     // Create an order.
-    create_account::<Order>(
+    create_program_account::<Order>(
         order_info,
         system_program,
         signer_info,
@@ -60,7 +60,6 @@ pub fn process_open(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     order.mint_a = *mint_a_info.key;
     order.mint_b = *mint_b_info.key;
     order.total_deposits = 0;
-    order.total_redemptions = 0;
 
     // Create escrow vaults for tokens A and B.
     if vault_a_info.data_is_empty() {

@@ -5,18 +5,79 @@ use steel::*;
 pub fn process_close(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResult {
     // Load accounts.
     let clock = Clock::get()?;
-    let [signer_info, order_info, system_program] = accounts else {
+    let [signer_info, order_info, vault_a_info, vault_b_info, system_program, token_program] = accounts else {
         return Err(ProgramError::NotEnoughAccountKeys);
     };
     signer_info.is_signer()?;
     let order = order_info
         .as_account_mut::<Order>(&protobook_api::ID)?
         .assert_mut(|o| o.authority == *signer_info.key)?
-        .assert_mut(|o| o.expires_at > clock.unix_timestamp)?;
+        .assert_mut(|o| o.expires_at < clock.unix_timestamp)?;
+    vault_a_info
+        .is_writable()?
+        .as_associated_token_account(&order_info.key, &order.mint_a)?
+        .assert(|v| v.amount == 0)?;
+    vault_b_info
+        .is_writable()?
+        .as_associated_token_account(&order_info.key, &order.mint_b)?
+        .assert(|v| v.amount == 0)?;
     system_program.is_program(&system_program::ID)?;
+    token_program.is_program(&spl_token::ID)?;
+ 
+    // Close the order.
+    order_info.close(signer_info)?;
 
-    // Marks the order as immediately expired.
-    order.expires_at = clock.unix_timestamp;
+    // Close vault A.
+    close_token_account_signed(
+        &vault_a_info,
+        &signer_info,
+        &order_info,
+        &token_program,
+        &[&ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+    )?;
+    close_token_account_signed(
+        &vault_b_info,
+        &signer_info,
+        &order_info,
+        &token_program,
+        &[&ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+    )?;
+    // invoke_signed(
+    //     &spl_token::instruction::close_account(
+    //         &spl_token::ID,
+    //         &vault_a_info.key,
+    //         &signer_info.key,
+    //         &order_info.key,
+    //         &[&order_info.key],
+    //     )?,
+    //     &[
+    //         token_program.clone(),
+    //         vault_a_info.clone(),
+    //         signer_info.clone(),
+    //         order_info.clone(),
+    //     ],
+    //     &protobook_api::ID,
+    //     &[ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+    // )?;
+
+    // Close vault B.
+    // invoke_signed(
+    //     &spl_token::instruction::close_account(
+    //         &spl_token::ID,
+    //         &vault_b_info.key,
+    //         &signer_info.key,
+    //         &order_info.key,
+    //         &[&order_info.key],
+    //     )?,
+    //     &[
+    //         token_program.clone(),
+    //         vault_b_info.clone(),
+    //         signer_info.clone(),
+    //         order_info.clone(),
+    //     ],
+    //     &protobook_api::ID,
+    //     &[ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+    // )?; 
 
     Ok(())
 }
