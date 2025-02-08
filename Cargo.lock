@@ -6044,14 +6044,13 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "steel"
-version = "2.1.1"
-source = "git+https://github.com/regolith-labs/steel.git?branch=master#466a4ab8c047fe0877afaaffc4f256706b37f454"
+version = "3.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9d10099e049ce7d440acbca65250428b32835332583dd1d7c9b750befbea994"
 dependencies = [
  "bytemuck",
  "num_enum",
  "solana-program",
- "spl-associated-token-account 6.0.0",
- "spl-token 4.0.2",
  "thiserror 1.0.69",
 ]
 
