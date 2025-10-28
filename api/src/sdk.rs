@@ -101,11 +101,11 @@ pub fn fill(authority: Pubkey, id: u64, mint_b: Pubkey, amount: u64) -> Instruct
 
 pub fn open(
     authority: Pubkey,
-    fee_collector: Pubkey,
     amount_a: u64,
     amount_b: u64,
     expires_at: i64,
     fee: u64,
+    fee_collector: Pubkey,
     id: u64,
     mint_a: Pubkey,
     mint_b: Pubkey,

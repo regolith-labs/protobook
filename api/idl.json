@@ -1,159 +1,419 @@
 {
-    "version": "0.1.0",
-    "name": "protobook",
-    "metadata": {  "origin": "anchor" },
-    "instructions": [
-      {
-        "name": "cancel",
-        "accounts": [
-          { "name": "signer", "isMut": false, "isSigner": true },
-          { "name": "order", "isMut": true, "isSigner": false }
-        ],
-        "args": []
-      },
-      {
-        "name": "close",
-        "accounts": [
-          { "name": "signer", "isMut": false, "isSigner": true },
-          { "name": "order", "isMut": true, "isSigner": false },
-          { "name": "vaultA", "isMut": true, "isSigner": false },
-          { "name": "vaultB", "isMut": true, "isSigner": false },
-          { "name": "systemProgram", "isMut": false, "isSigner": false },
-          { "name": "tokenProgram", "isMut": false, "isSigner": false }
-        ],
-        "args": []
-      },
-      {
-        "name": "collect",
-        "accounts": [
-          { "name": "signer", "isMut": false, "isSigner": true },
-          { "name": "beneficiary", "isMut": true, "isSigner": false },
-          { "name": "feeCollector", "isMut": true, "isSigner": false },
-          { "name": "order", "isMut": true, "isSigner": false },
-          { "name": "vault", "isMut": true, "isSigner": false },
-          { "name": "tokenProgram", "isMut": false, "isSigner": false }
-        ],
-        "args": []
-      },
-      {
-        "name": "fill",
-        "accounts": [
-          { "name": "signer", "isMut": false, "isSigner": true },
-          { "name": "order", "isMut": true, "isSigner": false },
-          { "name": "receipt", "isMut": true, "isSigner": false },
-          { "name": "sender", "isMut": true, "isSigner": false },
-          { "name": "vaultB", "isMut": true, "isSigner": false },
-          { "name": "systemProgram", "isMut": false, "isSigner": false },
-          { "name": "tokenProgram", "isMut": false, "isSigner": false }
-        ],
-        "args": [
-          { "name": "amount", "type": "u64" }
+  "version": "0.1.0",
+  "name": "protobook",
+  "metadata": {
+    "origin": "anchor"
+  },
+  "instructions": [
+    {
+      "name": "cancel",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "order",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "order",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "collect",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "beneficiary",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "feeCollector",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "order",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "fill",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "order",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "receipt",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sender",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "open",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "feeCollector",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "mintA",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "mintB",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "order",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sender",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultA",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultB",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amountA",
+          "type": "u64"
+        },
+        {
+          "name": "amountB",
+          "type": "u64"
+        },
+        {
+          "name": "expiresAt",
+          "type": "i64"
+        },
+        {
+          "name": "fee",
+          "type": "u64"
+        },
+        {
+          "name": "id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "redeem",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "beneficiary",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "order",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "receipt",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Order",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "amountA",
+            "type": "u64"
+          },
+          {
+            "name": "amountB",
+            "type": "u64"
+          },
+          {
+            "name": "expiresAt",
+            "type": "i64"
+          },
+          {
+            "name": "fee",
+            "type": "u64"
+          },
+          {
+            "name": "feeCollector",
+            "type": "publicKey"
+          },
+          {
+            "name": "id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "mintA",
+            "type": "publicKey"
+          },
+          {
+            "name": "mintB",
+            "type": "publicKey"
+          },
+          {
+            "name": "totalDeposits",
+            "type": "u64"
+          }
         ]
-      },
-      {
-        "name": "open",
-        "accounts": [
-          { "name": "signer", "isMut": false, "isSigner": true },
-          { "name": "feeCollector", "isMut": false, "isSigner": false },
-          { "name": "mintA", "isMut": false, "isSigner": false },
-          { "name": "mintB", "isMut": false, "isSigner": false },
-          { "name": "order", "isMut": true, "isSigner": false },
-          { "name": "sender", "isMut": true, "isSigner": false },
-          { "name": "vaultA", "isMut": true, "isSigner": false },
-          { "name": "vaultB", "isMut": true, "isSigner": false },
-          { "name": "systemProgram", "isMut": false, "isSigner": false },
-          { "name": "tokenProgram", "isMut": false, "isSigner": false },
-          { "name": "associatedTokenProgram", "isMut": false, "isSigner": false }
-        ],
-        "args": [
-          { "name": "amountA", "type": "u64" },
-          { "name": "amountB", "type": "u64" },
-          { "name": "expiresAt", "type": "i64" },
-          { "name": "fee", "type": "u64" },
-          { "name": "id", "type": { "array": ["u8", 32] } }
+      }
+    },
+    {
+      "name": "Receipt",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "deposit",
+            "type": "u64"
+          },
+          {
+            "name": "order",
+            "type": "publicKey"
+          }
         ]
-      },
-      {
-        "name": "redeem",
-        "accounts": [
-          { "name": "signer", "isMut": false, "isSigner": true },
-          { "name": "beneficiary", "isMut": true, "isSigner": false },
-          { "name": "order", "isMut": true, "isSigner": false },
-          { "name": "receipt", "isMut": true, "isSigner": false },
-          { "name": "vault", "isMut": true, "isSigner": false },
-          { "name": "systemProgram", "isMut": false, "isSigner": false },
-          { "name": "tokenProgram", "isMut": false, "isSigner": false }
-        ],
-        "args": []
       }
-    ],
-    "accounts": [
-      {
-        "name": "Order",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            { "name": "authority", "type": "publicKey" },
-            { "name": "amountA", "type": "u64" },
-            { "name": "amountB", "type": "u64" },
-            { "name": "expiresAt", "type": "i64" },
-            { "name": "fee", "type": "u64" },
-            { "name": "feeCollector", "type": "publicKey" },
-            { "name": "id", "type": { "array": ["u8", 32] } },
-            { "name": "mintA", "type": "publicKey" },
-            { "name": "mintB", "type": "publicKey" },
-            { "name": "totalDeposits", "type": "u64" }
-          ]
-        }
-      },
-      {
-        "name": "Receipt",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            { "name": "authority", "type": "publicKey" },
-            { "name": "deposit", "type": "u64" },
-            { "name": "order", "type": "publicKey" }
-          ]
-        }
+    }
+  ],
+  "types": [
+    {
+      "name": "ProtobookInstruction",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Cancel"
+          },
+          {
+            "name": "Close"
+          },
+          {
+            "name": "Collect"
+          },
+          {
+            "name": "Fill"
+          },
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Redeem"
+          }
+        ]
       }
-    ],
-    "types": [
-      {
-        "name": "ProtobookInstruction",
-        "type": {
-          "kind": "enum",
-          "variants": [
-            { "name": "Cancel" },
-            { "name": "Close" },
-            { "name": "Collect" },
-            { "name": "Fill" },
-            { "name": "Open" },
-            { "name": "Redeem" }
-          ]
-        }
-      },
-      {
-        "name": "Open",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            { "name": "amountA", "type": "u64" },
-            { "name": "amountB", "type": "u64" },
-            { "name": "expiresAt", "type": "i64" },
-            { "name": "fee", "type": "u64" },
-            { "name": "id", "type": { "array": ["u8", 32] } }
-          ]
-        }
-      },
-      {
-        "name": "Fill",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            { "name": "amount", "type": "u64" }
-          ]
-        }
+    },
+    {
+      "name": "Open",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amountA",
+            "type": "u64"
+          },
+          {
+            "name": "amountB",
+            "type": "u64"
+          },
+          {
+            "name": "expiresAt",
+            "type": "i64"
+          },
+          {
+            "name": "fee",
+            "type": "u64"
+          },
+          {
+            "name": "id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
       }
-    ]
+    },
+    {
+      "name": "Fill",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
 }

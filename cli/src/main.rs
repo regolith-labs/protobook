@@ -44,8 +44,23 @@ async fn main() {
         "open" => {
             open(&rpc, &payer).await.unwrap();
         }
+        "fill" => {
+            fill(&rpc, &payer).await.unwrap();
+        }
         "receipt" => {
             log_receipt(&rpc).await.unwrap();
+        }
+        "cancel" => {
+            cancel(&rpc, &payer).await.unwrap();
+        }
+        "collect" => {
+            collect(&rpc, &payer).await.unwrap();
+        }
+        "redeem" => {
+            redeem(&rpc, &payer).await.unwrap();
+        }
+        "close" => {
+            close(&rpc, &payer).await.unwrap();
         }
         "order" => {
             log_order(&rpc).await.unwrap();
@@ -59,9 +74,146 @@ async fn open(
     payer: &solana_sdk::signer::keypair::Keypair,
 ) -> Result<(), anyhow::Error> {
     let id = std::env::var("ID").unwrap();
-    
-    // let ix = ore_api::sdk::set_is_new_rng_enabled(payer.pubkey(), 2);
-    // submit_transaction(rpc, payer, &[ix]).await?;
+    let id = u64::from_str(&id).expect("Invalid ID");
+    let amount_a = std::env::var("AMOUNT_A").unwrap();
+    let amount_a = u64::from_str(&amount_a).expect("Invalid AMOUNT_A");
+    let amount_b = std::env::var("AMOUNT_B").unwrap();
+    let amount_b = u64::from_str(&amount_b).expect("Invalid AMOUNT_B");
+    let mint_a = std::env::var("MINT_A").unwrap();
+    let mint_a = Pubkey::from_str(&mint_a).expect("Invalid MINT_A");
+    let mint_b = std::env::var("MINT_B").unwrap();
+    let mint_b = Pubkey::from_str(&mint_b).expect("Invalid MINT_B");
+    let clock = get_clock(rpc).await?;
+    let expires_at = clock.unix_timestamp + (2 * 60 * 60); // 2 hours
+    let ix = protobook_api::sdk::open(payer.pubkey(), amount_a, amount_b, expires_at, 0, Pubkey::default(), id, mint_a, mint_b);
+    submit_transaction(rpc, payer, &[ix]).await?;
+    Ok(())
+}
+
+async fn fill(
+    rpc: &RpcClient,
+    payer: &solana_sdk::signer::keypair::Keypair,
+) -> Result<(), anyhow::Error> {
+    let order_address = std::env::var("ORDER_ADDRESS").unwrap();
+    let order_address = Pubkey::from_str(&order_address).expect("Invalid ORDER_ADDRESS");
+    let amount = std::env::var("AMOUNT").unwrap();
+    let amount = u64::from_str(&amount).expect("Invalid AMOUNT");
+    let order = get_order(&rpc, order_address).await?;
+    let clock = get_clock(rpc).await?;
+    if order.expires_at < clock.unix_timestamp {
+        return Err(anyhow::anyhow!("Order expired"));
+    }
+    if order.amount_b <= order.total_deposits {
+        return Err(anyhow::anyhow!("Order is filled"));
+    }
+    let ix = protobook_api::sdk::fill(payer.pubkey(), order.id, order.mint_b, amount);
+    submit_transaction(rpc, payer, &[ix]).await?;
+
+    // Log receipt
+    let receipt_address = receipt_pda(payer.pubkey(), order_address).0;
+    let receipt = get_receipt(&rpc, receipt_address).await?;
+    print_receipt(receipt).await?;
+    Ok(())
+}
+
+async fn cancel(
+    rpc: &RpcClient,
+    payer: &solana_sdk::signer::keypair::Keypair,
+) -> Result<(), anyhow::Error> {
+    let id = std::env::var("ID").unwrap();
+    let id = u64::from_str(&id).expect("Invalid ID");
+    let ix = protobook_api::sdk::cancel(payer.pubkey(), order.id);
+    submit_transaction(rpc, payer, &[ix]).await?;
+    println!("Order cancelled");
+    Ok(())
+}
+
+// authority: Pubkey,
+// beneficiary: Pubkey,
+// fee_collector: Pubkey,
+// id: u64,
+// mint: Pubkey,
+
+async fn collect(
+    rpc: &RpcClient,
+    payer: &solana_sdk::signer::keypair::Keypair,
+) -> Result<(), anyhow::Error> {
+    let id = std::env::var("ID").unwrap();
+    let id = u64::from_str(&id).expect("Invalid ID");
+    let clock = get_clock(rpc).await?;
+    let order_address = order_pda(payer.pubkey(), id).0;
+    let order = get_order(&rpc, order_address).await?;
+    if order.is_collected == 1 {
+        return Err(anyhow::anyhow!("Order is collected"));
+    }
+    if order.expires_at > clock.unix_timestamp {
+        return Err(anyhow::anyhow!("Order is open"));
+    }
+    let mint = if order.total_deposits == order.amount_b {
+        order.mint_b
+    } else {
+        order.mint_a
+    };
+    let beneficiary = get_associated_token_address(&order_address, &mint);
+    let ix = protobook_api::sdk::collect(payer.pubkey(), beneficiary, order.fee_collector, id, mint);
+    submit_transaction(rpc, payer, &[ix]).await?;
+    println!("Order collected");
+    Ok(())
+}
+
+
+// authority: Pubkey, beneficiary: Pubkey, id: u64, mint: Pubkey
+
+async fn redeem(
+    rpc: &RpcClient,
+    payer: &solana_sdk::signer::keypair::Keypair,
+) -> Result<(), anyhow::Error> {
+    let id = std::env::var("ID").unwrap();
+    let id = u64::from_str(&id).expect("Invalid ID");
+    let clock = get_clock(rpc).await?;
+    let order_address = order_pda(payer.pubkey(), id).0;
+    let order = get_order(&rpc, order_address).await?;
+    let receipt_address = receipt_pda(payer.pubkey(), order_address).0;
+    let receipt = get_receipt(&rpc, receipt_address).await?;
+    if order.total_redeemed == order.total_receipts {
+        return Err(anyhow::anyhow!("Order is redeemed"));
+    }
+    if order.expires_at > clock.unix_timestamp {
+        return Err(anyhow::anyhow!("Order is open"));
+    }
+    let mint = if order.total_deposits == order.amount_b {
+        order.mint_a
+    } else {
+        order.mint_b
+    };
+    let beneficiary = get_associated_token_address(&order_address, &mint);
+    let ix = protobook_api::sdk::redeem(payer.pubkey(), beneficiary, id, mint);
+    submit_transaction(rpc, payer, &[ix]).await?;
+    println!("Receipt redeemed");
+    Ok(())
+}
+
+// authority: Pubkey, id: u64, mint_a: Pubkey, mint_b: Pubkey
+async fn close(
+    rpc: &RpcClient,
+    payer: &solana_sdk::signer::keypair::Keypair,
+) -> Result<(), anyhow::Error> {
+    let id = std::env::var("ID").unwrap();
+    let id = u64::from_str(&id).expect("Invalid ID");
+    let order_address = order_pda(payer.pubkey(), id).0;
+    let order = get_order(&rpc, order_address).await?;
+    if order.expires_at > clock.unix_timestamp {
+        return Err(anyhow::anyhow!("Order is open"));
+    }
+    if order.total_receipts != order.total_redeemed {
+        return Err(anyhow::anyhow!("Order is not redeemed"));
+    }
+    if order.is_collected == 0 {
+        return Err(anyhow::anyhow!("Order is not collected"));
+    }
+    let ix = protobook_api::sdk::close(payer.pubkey(), id, order.mint_a, order.mint_b);
+    submit_transaction(rpc, payer, &[ix]).await?;
+    println!("Order closed");
     Ok(())
 }
 
@@ -80,10 +232,7 @@ async fn log_receipt(rpc: &RpcClient) -> Result<(), anyhow::Error> {
     let address = std::env::var("ADDRESS").unwrap();
     let address = Pubkey::from_str(&address).expect("Invalid ADDRESS");
     let receipt = get_receipt(&rpc, address).await?;
-    println!("Receipt");
-    println!("  Authority: {}", receipt.authority);
-    println!("  Deposit: {}", receipt.deposit);
-    println!("  Order: {}", receipt.order);
+    print_receipt(receipt).await?;
     Ok(())
 }
 
@@ -111,6 +260,15 @@ fn print_order(order: Order, clock: Clock) {
     println!("  Total redeemed: {}", order.total_redeemed);
     println!("  Is collected: {}", order.is_collected);
 }
+
+async fn print_receipt(receipt: Receipt) -> Result<(), anyhow::Error> {
+    println!("Receipt");
+    println!("  Authority: {}", receipt.authority);
+    println!("  Deposit: {}", receipt.deposit);
+    println!("  Order: {}", receipt.order);
+    Ok(())
+}
+
 
 async fn get_clock(rpc: &RpcClient) -> Result<Clock, anyhow::Error> {
     let data = rpc.get_account_data(&solana_sdk::sysvar::clock::ID).await?;
