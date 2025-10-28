@@ -58,6 +58,8 @@ async fn open(
     rpc: &RpcClient,
     payer: &solana_sdk::signer::keypair::Keypair,
 ) -> Result<(), anyhow::Error> {
+    let id = std::env::var("ID").unwrap();
+    
     // let ix = ore_api::sdk::set_is_new_rng_enabled(payer.pubkey(), 2);
     // submit_transaction(rpc, payer, &[ix]).await?;
     Ok(())
