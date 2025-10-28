@@ -5,7 +5,7 @@ use super::ProtobookAccount;
 /// A receipt tracks a deposit to fill an order.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable)]
-pub struct Receipt { 
+pub struct Receipt {
     /// The holder of the receipt (order taker).
     pub authority: Pubkey,
 

@@ -19,5 +19,5 @@ num_enum = "0.7"
 spl-associated-token-account = { version = "6.0", features = ["no-entrypoint"] }
 spl-token = { version = "4.0", features = ["no-entrypoint"] }
 solana-program = "2.1"
-steel = { git = "https://github.com/regolith-labs/steel.git", branch = "master", features = ["spl"] }
+steel = { version = "4.0.2", features = ["spl"] }
 thiserror = "1.0"
