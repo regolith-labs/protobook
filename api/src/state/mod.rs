@@ -15,11 +15,14 @@ pub enum ProtobookAccount {
 }
 
 /// Fetch PDA of the order account.
-pub fn order_pda(authority: Pubkey, seed: [u8; 32]) -> (Pubkey, u8) {
-    Pubkey::find_program_address(&[ORDER, authority.as_ref(), seed.as_ref()], &crate::id())            
+pub fn order_pda(authority: Pubkey, id: u64) -> (Pubkey, u8) {
+    Pubkey::find_program_address(
+        &[ORDER, authority.as_ref(), &id.to_le_bytes()],
+        &crate::id(),
+    )
 }
 
 /// Fetch PDA of the receipt account.
 pub fn receipt_pda(authority: Pubkey, order: Pubkey) -> (Pubkey, u8) {
-    Pubkey::find_program_address(&[RECEIPT, authority.as_ref(), order.as_ref()], &crate::id())            
+    Pubkey::find_program_address(&[RECEIPT, authority.as_ref(), order.as_ref()], &crate::id())
 }

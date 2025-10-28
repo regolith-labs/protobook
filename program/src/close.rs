@@ -53,7 +53,7 @@ pub fn process_close(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
             &beneficiary_a_info,
             &token_program,
             vault_a.amount(),
-            &[&ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+            &[&ORDER, signer_info.key.as_ref(), &order.id.to_le_bytes()],
         )?;
     }
     if vault_b.amount() > 0 {
@@ -76,7 +76,7 @@ pub fn process_close(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
             &beneficiary_b_info,
             &token_program,
             vault_b.amount(),
-            &[&ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+            &[&ORDER, signer_info.key.as_ref(), &order.id.to_le_bytes()],
         )?;
     }
 
@@ -89,14 +89,14 @@ pub fn process_close(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
         &signer_info,
         &order_info,
         &token_program,
-        &[&ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+        &[&ORDER, signer_info.key.as_ref(), &order.id.to_le_bytes()],
     )?;
     close_token_account_signed(
         &vault_b_info,
         &signer_info,
         &order_info,
         &token_program,
-        &[&ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+        &[&ORDER, signer_info.key.as_ref(), &order.id.to_le_bytes()],
     )?;
 
     Ok(())

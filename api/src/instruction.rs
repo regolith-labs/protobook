@@ -30,17 +30,17 @@ pub struct Expire {}
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Pod, Zeroable)]
 pub struct Open {
-    pub amount_a: u64,
-    pub amount_b: u64,
-    pub expires_at: i64,
-    pub fee: u64,
-    pub id: [u8; 32],
+    pub amount_a: [u8; 8],
+    pub amount_b: [u8; 8],
+    pub expires_at: [u8; 8],
+    pub fee: [u8; 8],
+    pub id: [u8; 8],
 }
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Pod, Zeroable)]
 pub struct Fill {
-    pub amount: u64,
+    pub amount: [u8; 8],
 }
 
 #[repr(C)]

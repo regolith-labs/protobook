@@ -5,7 +5,7 @@ use crate::prelude::*;
 
 // let [signer_info, order_info] = accounts else {
 
-pub fn cancel(authority: Pubkey, id: [u8; 32]) -> Instruction {
+pub fn cancel(authority: Pubkey, id: u64) -> Instruction {
     let order_address = order_pda(authority, id).0;
     Instruction {
         program_id: crate::ID,
@@ -19,7 +19,7 @@ pub fn cancel(authority: Pubkey, id: [u8; 32]) -> Instruction {
 
 // let [signer_info, beneficiary_a_info, beneficiary_b_info, mint_a_info, mint_b_info, order_info, vault_a_info, vault_b_info, system_program, token_program, associated_token_program] =
 
-pub fn close(authority: Pubkey, id: [u8; 32], mint_a: Pubkey, mint_b: Pubkey) -> Instruction {
+pub fn close(authority: Pubkey, id: u64, mint_a: Pubkey, mint_b: Pubkey) -> Instruction {
     let order_address = order_pda(authority, id).0;
     let beneficiary_a = get_associated_token_address(&authority, &mint_a);
     let beneficiary_b = get_associated_token_address(&authority, &mint_b);
@@ -50,7 +50,7 @@ pub fn collect(
     authority: Pubkey,
     beneficiary: Pubkey,
     fee_collector: Pubkey,
-    id: [u8; 32],
+    id: u64,
     mint: Pubkey,
 ) -> Instruction {
     let order_address = order_pda(authority, id).0;
@@ -74,7 +74,7 @@ pub fn collect(
 
 // let [signer_info, order_info, receipt_info, sender_info, vault_b_info, system_program, token_program] =
 
-pub fn fill(authority: Pubkey, id: [u8; 32], mint_b: Pubkey, amount: u64) -> Instruction {
+pub fn fill(authority: Pubkey, id: u64, mint_b: Pubkey, amount: u64) -> Instruction {
     let order_address = order_pda(authority, id).0;
     let vault_b = get_associated_token_address(&order_address, &mint_b);
     let receipt_address = receipt_pda(authority, order_address).0;
@@ -90,7 +90,10 @@ pub fn fill(authority: Pubkey, id: [u8; 32], mint_b: Pubkey, amount: u64) -> Ins
             AccountMeta::new_readonly(system_program::ID, false),
             AccountMeta::new_readonly(spl_token::ID, false),
         ],
-        data: Fill { amount }.to_bytes(),
+        data: Fill {
+            amount: amount.to_le_bytes(),
+        }
+        .to_bytes(),
     }
 }
 
@@ -103,7 +106,7 @@ pub fn open(
     amount_b: u64,
     expires_at: i64,
     fee: u64,
-    id: [u8; 32],
+    id: u64,
     mint_a: Pubkey,
     mint_b: Pubkey,
 ) -> Instruction {
@@ -127,11 +130,11 @@ pub fn open(
             AccountMeta::new_readonly(spl_associated_token_account::ID, false),
         ],
         data: Open {
-            amount_a,
-            amount_b,
-            expires_at,
-            fee,
-            id,
+            amount_a: amount_a.to_le_bytes(),
+            amount_b: amount_b.to_le_bytes(),
+            expires_at: expires_at.to_le_bytes(),
+            fee: fee.to_le_bytes(),
+            id: id.to_le_bytes(),
         }
         .to_bytes(),
     }
@@ -139,7 +142,7 @@ pub fn open(
 
 // let [signer_info, beneficiary_info, mint_info, order_info, receipt_info, vault_info, system_program, token_program, associated_token_program] =
 
-pub fn redeem(authority: Pubkey, beneficiary: Pubkey, id: [u8; 32], mint: Pubkey) -> Instruction {
+pub fn redeem(authority: Pubkey, beneficiary: Pubkey, id: u64, mint: Pubkey) -> Instruction {
     let order_address = order_pda(authority, id).0;
     let receipt_address = receipt_pda(authority, order_address).0;
     let vault = get_associated_token_address(&order_address, &mint);

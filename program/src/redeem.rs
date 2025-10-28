@@ -72,7 +72,7 @@ pub fn process_redeem(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResu
         beneficiary_info,
         token_program,
         amount,
-        &[ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+        &[ORDER, signer_info.key.as_ref(), &order.id.to_le_bytes()],
     )?;
 
     // Close the order account.

@@ -5,6 +5,7 @@ use steel::*;
 pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult {
     // Parse data.
     let args = Fill::try_from_bytes(data)?;
+    let amount = u64::from_le_bytes(args.amount);
 
     // Load accounts.
     let clock = Clock::get()?;
@@ -51,7 +52,7 @@ pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
 
     // Lock token B in escrow.
     let remaining = order.amount_b - order.total_deposits;
-    let amount = args.amount.min(remaining);
+    let amount = amount.min(remaining);
     transfer(signer_info, sender_info, order_info, vault_b_info, amount)?;
 
     // Record the deposit.

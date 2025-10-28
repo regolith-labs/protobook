@@ -25,7 +25,7 @@ pub struct Order {
     pub fee_collector: Pubkey,
 
     /// A unique identifier for the order, namespaced by the authority.
-    pub id: [u8; 32],
+    pub id: u64,
 
     /// The mint of token A.
     pub mint_a: Pubkey,

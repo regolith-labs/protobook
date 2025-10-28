@@ -71,7 +71,7 @@ pub fn process_collect(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramRes
         beneficiary_info,
         token_program,
         amount,
-        &[ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+        &[ORDER, signer_info.key.as_ref(), &order.id.to_le_bytes()],
     )?;
 
     // If filled, pay the fee collector.
@@ -82,7 +82,7 @@ pub fn process_collect(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramRes
             fee_collector_info,
             token_program,
             order.fee,
-            &[ORDER, signer_info.key.as_ref(), order.id.as_ref()],
+            &[ORDER, signer_info.key.as_ref(), &order.id.to_le_bytes()],
         )?;
     }
 

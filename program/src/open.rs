@@ -7,11 +7,12 @@ pub fn process_open(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     // Parse args.
     let clock = Clock::get()?;
     let args = Open::try_from_bytes(data)?;
-    if args.amount_a == 0
-        || args.amount_b == 0
-        || args.fee > args.amount_b
-        || args.expires_at < clock.unix_timestamp
-    {
+    let amount_a = u64::from_le_bytes(args.amount_a);
+    let amount_b = u64::from_le_bytes(args.amount_b);
+    let fee = u64::from_le_bytes(args.fee);
+    let expires_at = i64::from_le_bytes(args.expires_at);
+    let id = u64::from_le_bytes(args.id);
+    if amount_a == 0 || amount_b == 0 || fee > amount_b || expires_at < clock.unix_timestamp {
         return Err(ProgramError::InvalidArgument);
     }
 
@@ -60,12 +61,12 @@ pub fn process_open(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     )?;
     let order = order_info.as_account_mut::<Order>(&protobook_api::ID)?;
     order.authority = *signer_info.key;
-    order.amount_a = args.amount_a;
-    order.amount_b = args.amount_b;
-    order.expires_at = args.expires_at;
-    order.fee = args.fee;
+    order.amount_a = amount_a;
+    order.amount_b = amount_b;
+    order.expires_at = expires_at;
+    order.fee = fee;
     order.fee_collector = *fee_collector_info.key;
-    order.id = args.id;
+    order.id = id;
     order.mint_a = *mint_a_info.key;
     order.mint_b = *mint_b_info.key;
     order.total_deposits = 0;
@@ -103,7 +104,7 @@ pub fn process_open(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
         sender_info,
         vault_a_info,
         token_program,
-        args.amount_a,
+        amount_a,
     )?;
 
     Ok(())
