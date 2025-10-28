@@ -1,12 +1,6 @@
-use std::{collections::HashMap, str::FromStr};
+use std::str::FromStr;
 
-use jup_swap::{
-    quote::QuoteRequest,
-    swap::SwapRequest,
-    transaction_config::{DynamicSlippageSettings, TransactionConfig},
-    JupiterSwapApiClient,
-};
-use ore_api::prelude::*;
+use protobook_api::prelude::*;
 use solana_account_decoder::UiAccountEncoding;
 use solana_client::{
     client_error::{reqwest::StatusCode, ClientErrorKind},
@@ -14,20 +8,16 @@ use solana_client::{
     rpc_config::{RpcAccountInfoConfig, RpcProgramAccountsConfig},
     rpc_filter::{Memcmp, RpcFilterType},
 };
-use solana_sdk::pubkey;
 use solana_sdk::{
-    address_lookup_table::{state::AddressLookupTable, AddressLookupTableAccount},
+    address_lookup_table::AddressLookupTableAccount,
     compute_budget::ComputeBudgetInstruction,
     message::{v0::Message, VersionedMessage},
-    native_token::{lamports_to_sol, LAMPORTS_PER_SOL},
     pubkey::Pubkey,
     signature::{read_keypair_file, Signature, Signer},
-    slot_hashes::SlotHashes,
     transaction::{Transaction, VersionedTransaction},
 };
 use spl_associated_token_account::get_associated_token_address;
-use spl_token::{amount_to_ui_amount, ui_amount_to_amount};
-use steel::{AccountDeserialize, AccountMeta, Clock, Discriminator, Instruction};
+use steel::{AccountDeserialize, Clock, Discriminator, Instruction};
 
 #[tokio::main]
 async fn main() {
@@ -41,6 +31,9 @@ async fn main() {
         .expect("Missing COMMAND env var")
         .as_str()
     {
+        "clock" => {
+            log_clock(&rpc).await.unwrap();
+        }
         "open" => {
             open(&rpc, &payer).await.unwrap();
         }
@@ -85,7 +78,17 @@ async fn open(
     let mint_b = Pubkey::from_str(&mint_b).expect("Invalid MINT_B");
     let clock = get_clock(rpc).await?;
     let expires_at = clock.unix_timestamp + (2 * 60 * 60); // 2 hours
-    let ix = protobook_api::sdk::open(payer.pubkey(), amount_a, amount_b, expires_at, 0, Pubkey::default(), id, mint_a, mint_b);
+    let ix = protobook_api::sdk::open(
+        payer.pubkey(),
+        amount_a,
+        amount_b,
+        expires_at,
+        0,
+        Pubkey::default(),
+        id,
+        mint_a,
+        mint_b,
+    );
     submit_transaction(rpc, payer, &[ix]).await?;
     Ok(())
 }
@@ -122,7 +125,7 @@ async fn cancel(
 ) -> Result<(), anyhow::Error> {
     let id = std::env::var("ID").unwrap();
     let id = u64::from_str(&id).expect("Invalid ID");
-    let ix = protobook_api::sdk::cancel(payer.pubkey(), order.id);
+    let ix = protobook_api::sdk::cancel(payer.pubkey(), id);
     submit_transaction(rpc, payer, &[ix]).await?;
     println!("Order cancelled");
     Ok(())
@@ -155,12 +158,12 @@ async fn collect(
         order.mint_a
     };
     let beneficiary = get_associated_token_address(&order_address, &mint);
-    let ix = protobook_api::sdk::collect(payer.pubkey(), beneficiary, order.fee_collector, id, mint);
+    let ix =
+        protobook_api::sdk::collect(payer.pubkey(), beneficiary, order.fee_collector, id, mint);
     submit_transaction(rpc, payer, &[ix]).await?;
     println!("Order collected");
     Ok(())
 }
-
 
 // authority: Pubkey, beneficiary: Pubkey, id: u64, mint: Pubkey
 
@@ -173,8 +176,6 @@ async fn redeem(
     let clock = get_clock(rpc).await?;
     let order_address = order_pda(payer.pubkey(), id).0;
     let order = get_order(&rpc, order_address).await?;
-    let receipt_address = receipt_pda(payer.pubkey(), order_address).0;
-    let receipt = get_receipt(&rpc, receipt_address).await?;
     if order.total_redeemed == order.total_receipts {
         return Err(anyhow::anyhow!("Order is redeemed"));
     }
@@ -200,6 +201,7 @@ async fn close(
 ) -> Result<(), anyhow::Error> {
     let id = std::env::var("ID").unwrap();
     let id = u64::from_str(&id).expect("Invalid ID");
+    let clock = get_clock(rpc).await?;
     let order_address = order_pda(payer.pubkey(), id).0;
     let order = get_order(&rpc, order_address).await?;
     if order.expires_at > clock.unix_timestamp {
@@ -269,7 +271,6 @@ async fn print_receipt(receipt: Receipt) -> Result<(), anyhow::Error> {
     Ok(())
 }
 
-
 async fn get_clock(rpc: &RpcClient) -> Result<Clock, anyhow::Error> {
     let data = rpc.get_account_data(&solana_sdk::sysvar::clock::ID).await?;
     let clock = bincode::deserialize::<Clock>(&data)?;
@@ -288,7 +289,10 @@ async fn get_receipt(rpc: &RpcClient, address: Pubkey) -> Result<Receipt, anyhow
     Ok(*receipt)
 }
 
-async fn get_receipts(rpc: &RpcClient, order: Pubkey) -> Result<Vec<(Pubkey, Receipt)>, anyhow::Error> {
+async fn get_receipts(
+    rpc: &RpcClient,
+    order: Pubkey,
+) -> Result<Vec<(Pubkey, Receipt)>, anyhow::Error> {
     //  TODO Filter by order
     let receipts = get_program_accounts::<Receipt>(rpc, protobook_api::ID, vec![]).await?;
     Ok(receipts)
@@ -298,8 +302,6 @@ async fn get_orders(rpc: &RpcClient) -> Result<Vec<(Pubkey, Order)>, anyhow::Err
     let orders = get_program_accounts::<Order>(rpc, protobook_api::ID, vec![]).await?;
     Ok(orders)
 }
-
-
 
 #[allow(dead_code)]
 async fn simulate_transaction(
