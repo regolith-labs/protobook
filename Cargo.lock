@@ -2931,6 +2931,7 @@ dependencies = [
  "num_enum",
  "solana-program",
  "spl-associated-token-account 6.0.0",
+ "spl-token 4.0.2",
  "steel",
  "thiserror 1.0.69",
 ]

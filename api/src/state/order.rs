@@ -35,6 +35,15 @@ pub struct Order {
 
     /// The total amount of token B deposited by takers.
     pub total_deposits: u64,
+
+    /// The total number receipts issued for this order.
+    pub total_receipts: u64,
+
+    /// The total amount of receipts redeemed by takers.
+    pub total_redeemed: u64,
+
+    /// Is collected.
+    pub is_collected: u64,
 }
 
 account!(ProtobookAccount, Order);
