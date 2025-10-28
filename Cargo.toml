@@ -6,9 +6,9 @@ members = ["api", "program"]
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
-homepage = ""
-documentation = ""
-repository = ""
+homepage = "https://protobook.xyz"
+documentation = "https://docs.rs/protobook-api/latest/protobook_api/"
+repository = "https://github.com/regolith-labs/protobook"
 readme = "./README.md"
 keywords = ["solana"]
 

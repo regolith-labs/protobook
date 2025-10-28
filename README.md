@@ -1,6 +1,6 @@
 # Protobook
 
-**Protobook** is a Solana smart contract for issuing public, timebound orders to buy a given token at a fixed price. It allows anyone to securely execute a one-to-many OTC swap with participating public liquidity. In this way, it is a generic and permissionless orderbook protocol.
+**Protobook** is a Solana smart contract for issuing public, timebound orders to buy a given token at a fixed price. It allows anyone to securely execute a one-to-many swap with willing public liquidity, thereby serving as a generic and permissionless orderbook protocol.
 
 ## Accounts
 - [`Order`](api/src/state/order.rs) – An order is a public, timebound offer to buy a given token at a fixed price.
@@ -22,9 +22,9 @@ When an order expires, its owner can collect either the tokens they wished to bu
 
 ## Discussion
 
-Protobook is built on the assumption that all order matching can happen offchain. It provides _only_ a system for issuing and managing public swap orders. These orders can represent one-off OTC trades between private parties or one-to-many swaps on a public exchange. An orderbook UI and trading bots can be readibly be built on the data structures provided by Protobook with full support for limit orders and immediate cancelling. In other words, Protobook puts the orders onchain and builds the "book" offchain. 
+Protobook assumes all order matching happens offchain. It provides _only_ a system for issuing and managing swap orders. These orders can represent one-off OTC swaps between private parties or one-to-many swaps on a public exchange. An orderbook UI and trading bots can be readibly be built on the Protobook data structure with full support for limit orders and immediate order cancellation. In short, Protobook puts the orders onchain and builds the "book" offchain. 
 
-A book is simply an index of all open orders for a given market. To create a book, for example, one could filter for all Protobook orders between SOL and USDC mints. Then simply filter out the expired orders, index the orders into price ranges, and display the orders as a book to visualize the bid/ask spread and market depth. For orders batched into the same price range, an exchange can choose to fill orders with the best prices first. By assuming that all order matching happens offchain, Protobook greatly reduces contract complexity and transaction costs compared to existing orderbook protocols on Solana. 
+A book is simply an index of all open orders for a given market. To create a book, for example, one could filter for all Protobook orders with SOL and USDC mints. Then simply filter out the expired orders, index the orders into price ranges, and display the orders as a book to visualize the bid/ask spread and market depth. For orders batched into the same price range, an exchange can choose to fill orders with the best prices first. By assuming that all order matching can happen offchain, Protobook greatly reduces transaction complexity and cost compared to existing orderbook protocols on Solana.
 
 ## Get started
 
