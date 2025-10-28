@@ -1,0 +1,1 @@
+solana-test-validator --bpf-program proToJQCyRGaRSmWW4sQDLUaeoQPTwoCUhbHbSU761S target/deploy/protobook_program.so -r

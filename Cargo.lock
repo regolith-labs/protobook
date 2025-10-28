@@ -2937,6 +2937,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "protobook-cli"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "base64 0.22.1",
+ "bincode",
+ "bytemuck",
+ "protobook-api",
+ "serde_json",
+ "solana-account-decoder",
+ "solana-client",
+ "solana-program",
+ "solana-sdk",
+ "spl-associated-token-account 6.0.0",
+ "spl-token 4.0.2",
+ "steel",
+ "tokio",
+]
+
+[[package]]
 name = "protobook-program"
 version = "0.1.0"
 dependencies = [
