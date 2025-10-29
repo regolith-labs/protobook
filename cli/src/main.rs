@@ -125,7 +125,8 @@ async fn cancel(
 ) -> Result<(), anyhow::Error> {
     let id = std::env::var("ID").unwrap();
     let id = u64::from_str(&id).expect("Invalid ID");
-    let ix = protobook_api::sdk::cancel(payer.pubkey(), id);
+    let order_address = order_pda(payer.pubkey(), id).0;
+    let ix = protobook_api::sdk::cancel(payer.pubkey(), order_address);
     submit_transaction(rpc, payer, &[ix]).await?;
     println!("Order cancelled");
     Ok(())
@@ -158,8 +159,13 @@ async fn collect(
         order.mint_a
     };
     let beneficiary = get_associated_token_address(&order_address, &mint);
-    let ix =
-        protobook_api::sdk::collect(payer.pubkey(), beneficiary, order.fee_collector, id, mint);
+    let ix = protobook_api::sdk::collect(
+        payer.pubkey(),
+        beneficiary,
+        order.fee_collector,
+        order_address,
+        mint,
+    );
     submit_transaction(rpc, payer, &[ix]).await?;
     println!("Order collected");
     Ok(())
@@ -188,7 +194,7 @@ async fn redeem(
         order.mint_b
     };
     let beneficiary = get_associated_token_address(&order_address, &mint);
-    let ix = protobook_api::sdk::redeem(payer.pubkey(), beneficiary, id, mint);
+    let ix = protobook_api::sdk::redeem(payer.pubkey(), beneficiary, order_address, mint);
     submit_transaction(rpc, payer, &[ix]).await?;
     println!("Receipt redeemed");
     Ok(())
@@ -213,7 +219,7 @@ async fn close(
     if order.is_collected == 0 {
         return Err(anyhow::anyhow!("Order is not collected"));
     }
-    let ix = protobook_api::sdk::close(payer.pubkey(), id, order.mint_a, order.mint_b);
+    let ix = protobook_api::sdk::close(payer.pubkey(), order_address, order.mint_a, order.mint_b);
     submit_transaction(rpc, payer, &[ix]).await?;
     println!("Order closed");
     Ok(())

@@ -1,4 +1,5 @@
 use protobook_api::prelude::*;
+use solana_program::log::sol_log;
 use steel::*;
 
 /// Fills an order.
@@ -50,10 +51,19 @@ pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
         receipt_info.as_account_mut::<Receipt>(&protobook_api::ID)?
     };
 
+    let sender = sender_info.as_associated_token_account(&signer_info.key, &order.mint_b)?;
+    sol_log(&format!("sender: {:?}", sender.amount()).to_string());
+
     // Lock token B in escrow.
     let remaining = order.amount_b - order.total_deposits;
     let amount = amount.min(remaining);
-    transfer(signer_info, sender_info, order_info, vault_b_info, amount)?;
+    transfer(
+        signer_info,
+        sender_info,
+        vault_b_info,
+        token_program,
+        amount,
+    )?;
 
     // Record the deposit.
     receipt.deposit += amount;

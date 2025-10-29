@@ -5,13 +5,12 @@ use crate::prelude::*;
 
 // let [signer_info, order_info] = accounts else {
 
-pub fn cancel(authority: Pubkey, id: u64) -> Instruction {
-    let order_address = order_pda(authority, id).0;
+pub fn cancel(authority: Pubkey, order: Pubkey) -> Instruction {
     Instruction {
         program_id: crate::ID,
         accounts: vec![
             AccountMeta::new(authority, true),
-            AccountMeta::new(order_address, false),
+            AccountMeta::new(order, false),
         ],
         data: Cancel {}.to_bytes(),
     }
@@ -19,12 +18,11 @@ pub fn cancel(authority: Pubkey, id: u64) -> Instruction {
 
 // let [signer_info, beneficiary_a_info, beneficiary_b_info, mint_a_info, mint_b_info, order_info, vault_a_info, vault_b_info, system_program, token_program, associated_token_program] =
 
-pub fn close(authority: Pubkey, id: u64, mint_a: Pubkey, mint_b: Pubkey) -> Instruction {
-    let order_address = order_pda(authority, id).0;
+pub fn close(authority: Pubkey, order: Pubkey, mint_a: Pubkey, mint_b: Pubkey) -> Instruction {
     let beneficiary_a = get_associated_token_address(&authority, &mint_a);
     let beneficiary_b = get_associated_token_address(&authority, &mint_b);
-    let vault_a = get_associated_token_address(&order_address, &mint_a);
-    let vault_b = get_associated_token_address(&order_address, &mint_b);
+    let vault_a = get_associated_token_address(&order, &mint_a);
+    let vault_b = get_associated_token_address(&order, &mint_b);
     Instruction {
         program_id: crate::ID,
         accounts: vec![
@@ -33,7 +31,7 @@ pub fn close(authority: Pubkey, id: u64, mint_a: Pubkey, mint_b: Pubkey) -> Inst
             AccountMeta::new(beneficiary_b, false),
             AccountMeta::new(mint_a, false),
             AccountMeta::new(mint_b, false),
-            AccountMeta::new(order_address, false),
+            AccountMeta::new(order, false),
             AccountMeta::new(vault_a, false),
             AccountMeta::new(vault_b, false),
             AccountMeta::new_readonly(system_program::ID, false),
@@ -50,11 +48,10 @@ pub fn collect(
     authority: Pubkey,
     beneficiary: Pubkey,
     fee_collector: Pubkey,
-    id: u64,
+    order: Pubkey,
     mint: Pubkey,
 ) -> Instruction {
-    let order_address = order_pda(authority, id).0;
-    let vault = get_associated_token_address(&order_address, &mint);
+    let vault = get_associated_token_address(&order, &mint);
     Instruction {
         program_id: crate::ID,
         accounts: vec![
@@ -62,7 +59,7 @@ pub fn collect(
             AccountMeta::new(beneficiary, false),
             AccountMeta::new(fee_collector, false),
             AccountMeta::new(mint, false),
-            AccountMeta::new(order_address, false),
+            AccountMeta::new(order, false),
             AccountMeta::new(vault, false),
             AccountMeta::new_readonly(system_program::ID, false),
             AccountMeta::new_readonly(spl_token::ID, false),
@@ -141,17 +138,16 @@ pub fn open(
 
 // let [signer_info, beneficiary_info, mint_info, order_info, receipt_info, vault_info, system_program, token_program, associated_token_program] =
 
-pub fn redeem(authority: Pubkey, beneficiary: Pubkey, id: u64, mint: Pubkey) -> Instruction {
-    let order_address = order_pda(authority, id).0;
-    let receipt_address = receipt_pda(authority, order_address).0;
-    let vault = get_associated_token_address(&order_address, &mint);
+pub fn redeem(authority: Pubkey, beneficiary: Pubkey, order: Pubkey, mint: Pubkey) -> Instruction {
+    let receipt_address = receipt_pda(authority, order).0;
+    let vault = get_associated_token_address(&order, &mint);
     Instruction {
         program_id: crate::ID,
         accounts: vec![
             AccountMeta::new(authority, true),
             AccountMeta::new(beneficiary, false),
             AccountMeta::new(mint, false),
-            AccountMeta::new(order_address, false),
+            AccountMeta::new(order, false),
             AccountMeta::new(receipt_address, false),
             AccountMeta::new(vault, false),
             AccountMeta::new_readonly(system_program::ID, false),
