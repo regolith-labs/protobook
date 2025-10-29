@@ -109,7 +109,7 @@ async fn fill(
     if order.amount_b <= order.total_deposits {
         return Err(anyhow::anyhow!("Order is filled"));
     }
-    let ix = protobook_api::sdk::fill(payer.pubkey(), order.id, order.mint_b, amount);
+    let ix = protobook_api::sdk::fill(payer.pubkey(), order_address, order.mint_b, amount);
     submit_transaction(rpc, payer, &[ix]).await?;
 
     // Log receipt

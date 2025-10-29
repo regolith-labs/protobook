@@ -74,16 +74,15 @@ pub fn collect(
 
 // let [signer_info, order_info, receipt_info, sender_info, vault_b_info, system_program, token_program] =
 
-pub fn fill(authority: Pubkey, id: u64, mint_b: Pubkey, amount: u64) -> Instruction {
-    let order_address = order_pda(authority, id).0;
-    let vault_b = get_associated_token_address(&order_address, &mint_b);
-    let receipt_address = receipt_pda(authority, order_address).0;
+pub fn fill(authority: Pubkey, order: Pubkey, mint_b: Pubkey, amount: u64) -> Instruction {
+    let vault_b = get_associated_token_address(&order, &mint_b);
+    let receipt_address = receipt_pda(authority, order).0;
     let sender = get_associated_token_address(&authority, &mint_b);
     Instruction {
         program_id: crate::ID,
         accounts: vec![
             AccountMeta::new(authority, true),
-            AccountMeta::new(order_address, false),
+            AccountMeta::new(order, false),
             AccountMeta::new(receipt_address, false),
             AccountMeta::new(sender, false),
             AccountMeta::new(vault_b, false),
