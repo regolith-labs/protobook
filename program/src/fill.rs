@@ -46,6 +46,7 @@ pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
         receipt.authority = *signer_info.key;
         receipt.deposit = 0;
         receipt.order = *order_info.key;
+        order.total_receipts += 1;
         receipt
     } else {
         receipt_info.as_account_mut::<Receipt>(&protobook_api::ID)?
@@ -68,7 +69,6 @@ pub fn process_fill(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     // Record the deposit.
     receipt.deposit += amount;
     order.total_deposits += amount;
-    order.total_receipts += 1;
 
     // If filled, expire the order immediately.
     if order.total_deposits == order.amount_b {

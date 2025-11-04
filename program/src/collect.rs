@@ -40,8 +40,7 @@ pub fn process_collect(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramRes
             beneficiary_info.as_associated_token_account(&signer_info.key, &order.mint_b)?;
         }
         vault_info.as_associated_token_account(&order_info.key, &order.mint_b)?;
-        fee_collector_info.as_associated_token_account(&order.fee_collector, &order.mint_b)?;
-        order.total_deposits - order.fee
+        order.total_deposits
     } else {
         mint_info.has_address(&order.mint_a)?;
         if beneficiary_info.data_is_empty() {
@@ -73,18 +72,6 @@ pub fn process_collect(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramRes
         amount,
         &[ORDER, signer_info.key.as_ref(), &order.id.to_le_bytes()],
     )?;
-
-    // If filled, pay the fee collector.
-    if is_filled && order.fee > 0 {
-        transfer_signed(
-            order_info,
-            vault_info,
-            fee_collector_info,
-            token_program,
-            order.fee,
-            &[ORDER, signer_info.key.as_ref(), &order.id.to_le_bytes()],
-        )?;
-    }
 
     Ok(())
 }

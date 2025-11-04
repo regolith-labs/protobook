@@ -80,9 +80,6 @@ pub fn process_close(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
         )?;
     }
 
-    // Close the order account.
-    order_info.close(signer_info)?;
-
     // Close the escrow vaults.
     close_token_account_signed(
         &vault_a_info,
@@ -98,6 +95,9 @@ pub fn process_close(accounts: &[AccountInfo<'_>], _data: &[u8]) -> ProgramResul
         &token_program,
         &[&ORDER, signer_info.key.as_ref(), &order.id.to_le_bytes()],
     )?;
+
+    // Close the order account.
+    order_info.close(signer_info)?;
 
     Ok(())
 }

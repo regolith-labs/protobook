@@ -19,9 +19,11 @@ pub struct Order {
     pub expires_at: i64,
 
     /// An optional fee to be paid by the authority if the order is filled.
+    #[deprecated(since = "0.1.4", note = "Fee no longer supported")]
     pub fee: u64,
 
     /// The collector of the fee.
+    #[deprecated(since = "0.1.4", note = "Fee no longer supported")]
     pub fee_collector: Pubkey,
 
     /// A unique identifier for the order, namespaced by the authority.

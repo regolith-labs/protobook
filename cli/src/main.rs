@@ -58,8 +58,33 @@ async fn main() {
         "order" => {
             log_order(&rpc).await.unwrap();
         }
+        "orders" => {
+            log_orders(&rpc).await.unwrap();
+        }
+        "receipts" => {
+            log_receipts(&rpc).await.unwrap();
+        }
         _ => panic!("Invalid command"),
     };
+}
+
+async fn log_orders(rpc: &RpcClient) -> Result<(), anyhow::Error> {
+    let clock = get_clock(rpc).await?;
+    let orders = get_orders(rpc).await?;
+    for (_address, order) in orders {
+        print_order(order, &clock);
+    }
+    Ok(())
+}
+
+async fn log_receipts(rpc: &RpcClient) -> Result<(), anyhow::Error> {
+    let order_address = std::env::var("ORDER").unwrap();
+    let order_address = Pubkey::from_str(&order_address).expect("Invalid ORDER");
+    let receipts = get_receipts(rpc, order_address).await?;
+    for (_address, receipt) in receipts {
+        print_receipt(receipt).await?;
+    }
+    Ok(())
 }
 
 async fn open(
@@ -132,12 +157,7 @@ async fn cancel(
     Ok(())
 }
 
-// authority: Pubkey,
-// beneficiary: Pubkey,
-// fee_collector: Pubkey,
-// id: u64,
-// mint: Pubkey,
-
+#[allow(deprecated)]
 async fn collect(
     rpc: &RpcClient,
     payer: &solana_sdk::signer::keypair::Keypair,
@@ -249,18 +269,16 @@ async fn log_order(rpc: &RpcClient) -> Result<(), anyhow::Error> {
     let address = Pubkey::from_str(&address).expect("Invalid ADDRESS");
     let order = get_order(&rpc, address).await?;
     let clock = get_clock(&rpc).await?;
-    print_order(order, clock);
+    print_order(order, &clock);
     Ok(())
 }
 
-fn print_order(order: Order, clock: Clock) {
+fn print_order(order: Order, clock: &Clock) {
     println!("Order");
     println!("  Id: {:?}", order.id);
     println!("  Amount A: {}", order.amount_a);
     println!("  Amount B: {}", order.amount_b);
     println!("  Expires at: {}", order.expires_at);
-    println!("  Fee: {}", order.fee);
-    println!("  Fee collector: {}", order.fee_collector);
     println!("  Mint A: {}", order.mint_a);
     println!("  Mint B: {}", order.mint_b);
     println!("  Total deposits: {}", order.total_deposits);
@@ -299,8 +317,8 @@ async fn get_receipts(
     rpc: &RpcClient,
     order: Pubkey,
 ) -> Result<Vec<(Pubkey, Receipt)>, anyhow::Error> {
-    //  TODO Filter by order
-    let receipts = get_program_accounts::<Receipt>(rpc, protobook_api::ID, vec![]).await?;
+    let filter = RpcFilterType::Memcmp(Memcmp::new_base58_encoded(48, &order.to_bytes()));
+    let receipts = get_program_accounts::<Receipt>(rpc, protobook_api::ID, vec![filter]).await?;
     Ok(receipts)
 }
 

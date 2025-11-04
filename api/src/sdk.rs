@@ -95,6 +95,7 @@ pub fn fill(authority: Pubkey, order: Pubkey, mint_b: Pubkey, amount: u64) -> In
 
 // let [signer_info, fee_collector_info, mint_a_info, mint_b_info, order_info, sender_info, vault_a_info, vault_b_info, system_program, token_program, associated_token_program] =
 
+#[allow(deprecated)]
 pub fn open(
     authority: Pubkey,
     amount_a: u64,

@@ -33,6 +33,7 @@ pub struct Open {
     pub amount_a: [u8; 8],
     pub amount_b: [u8; 8],
     pub expires_at: [u8; 8],
+    #[deprecated(since = "0.1.4", note = "Fee no longer supported")]
     pub fee: [u8; 8],
     pub id: [u8; 8],
 }

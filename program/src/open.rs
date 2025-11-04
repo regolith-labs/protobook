@@ -9,15 +9,14 @@ pub fn process_open(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     let args = Open::try_from_bytes(data)?;
     let amount_a = u64::from_le_bytes(args.amount_a);
     let amount_b = u64::from_le_bytes(args.amount_b);
-    let fee = u64::from_le_bytes(args.fee);
     let expires_at = i64::from_le_bytes(args.expires_at);
     let id = u64::from_le_bytes(args.id);
-    if amount_a == 0 || amount_b == 0 || fee > amount_b || expires_at < clock.unix_timestamp {
+    if amount_a == 0 || amount_b == 0 || expires_at < clock.unix_timestamp {
         return Err(ProgramError::InvalidArgument);
     }
 
     // Load accounts.
-    let [signer_info, fee_collector_info, mint_a_info, mint_b_info, order_info, sender_info, vault_a_info, vault_b_info, system_program, token_program, associated_token_program] =
+    let [signer_info, _fee_collector_info, mint_a_info, mint_b_info, order_info, sender_info, vault_a_info, vault_b_info, system_program, token_program, associated_token_program] =
         accounts
     else {
         return Err(ProgramError::NotEnoughAccountKeys);
@@ -64,8 +63,6 @@ pub fn process_open(accounts: &[AccountInfo<'_>], data: &[u8]) -> ProgramResult 
     order.amount_a = amount_a;
     order.amount_b = amount_b;
     order.expires_at = expires_at;
-    order.fee = fee;
-    order.fee_collector = *fee_collector_info.key;
     order.id = id;
     order.mint_a = *mint_a_info.key;
     order.mint_b = *mint_b_info.key;
