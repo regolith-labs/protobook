@@ -44,20 +44,14 @@ pub fn close(authority: Pubkey, order: Pubkey, mint_a: Pubkey, mint_b: Pubkey) -
 
 // let [signer_info, beneficiary_info, fee_collector_info, mint_info, order_info, vault_info, system_program, token_program, associated_token_program] =
 
-pub fn collect(
-    authority: Pubkey,
-    beneficiary: Pubkey,
-    fee_collector: Pubkey,
-    order: Pubkey,
-    mint: Pubkey,
-) -> Instruction {
+pub fn collect(authority: Pubkey, beneficiary: Pubkey, order: Pubkey, mint: Pubkey) -> Instruction {
     let vault = get_associated_token_address(&order, &mint);
     Instruction {
         program_id: crate::ID,
         accounts: vec![
             AccountMeta::new(authority, true),
             AccountMeta::new(beneficiary, false),
-            AccountMeta::new(fee_collector, false),
+            AccountMeta::new(Pubkey::default(), false),
             AccountMeta::new(mint, false),
             AccountMeta::new(order, false),
             AccountMeta::new(vault, false),
@@ -101,8 +95,6 @@ pub fn open(
     amount_a: u64,
     amount_b: u64,
     expires_at: i64,
-    fee: u64,
-    fee_collector: Pubkey,
     id: u64,
     mint_a: Pubkey,
     mint_b: Pubkey,
@@ -115,7 +107,7 @@ pub fn open(
         program_id: crate::ID,
         accounts: vec![
             AccountMeta::new(authority, true),
-            AccountMeta::new(fee_collector, false),
+            AccountMeta::new(Pubkey::default(), false),
             AccountMeta::new(mint_a, false),
             AccountMeta::new(mint_b, false),
             AccountMeta::new(order_address, false),
@@ -130,7 +122,7 @@ pub fn open(
             amount_a: amount_a.to_le_bytes(),
             amount_b: amount_b.to_le_bytes(),
             expires_at: expires_at.to_le_bytes(),
-            fee: fee.to_le_bytes(),
+            fee: 0u64.to_le_bytes(),
             id: id.to_le_bytes(),
         }
         .to_bytes(),

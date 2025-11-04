@@ -108,8 +108,6 @@ async fn open(
         amount_a,
         amount_b,
         expires_at,
-        0,
-        Pubkey::default(),
         id,
         mint_a,
         mint_b,
@@ -179,13 +177,7 @@ async fn collect(
         order.mint_a
     };
     let beneficiary = get_associated_token_address(&order_address, &mint);
-    let ix = protobook_api::sdk::collect(
-        payer.pubkey(),
-        beneficiary,
-        order.fee_collector,
-        order_address,
-        mint,
-    );
+    let ix = protobook_api::sdk::collect(payer.pubkey(), beneficiary, order_address, mint);
     submit_transaction(rpc, payer, &[ix]).await?;
     println!("Order collected");
     Ok(())

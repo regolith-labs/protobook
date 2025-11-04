@@ -2925,7 +2925,7 @@ dependencies = [
 
 [[package]]
 name = "protobook-api"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "bytemuck",
  "num_enum",
@@ -2938,7 +2938,7 @@ dependencies = [
 
 [[package]]
 name = "protobook-cli"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2958,7 +2958,7 @@ dependencies = [
 
 [[package]]
 name = "protobook-program"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "base64 0.21.7",
  "protobook-api",
